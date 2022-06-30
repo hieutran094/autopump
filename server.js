@@ -19,7 +19,6 @@ const io = new Server(server)
 const __dirname = path.resolve()
 dotenv.config()
 
-app.use(httpLogger)
 app.use(history())
 app.use(bodyParser.json())
 app.use(cors({ origin: '*' }))
@@ -27,6 +26,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.static(path.join(__dirname, 'client/dist')))
 app.use('/', routers)
 app.use(errorHandler)
+//app.use(httpLogger)
 let device = {
   id: null,
   isOnline: false,
@@ -77,13 +77,16 @@ const bootstrap = async () => {
     const cron = new CronJob(
       `00 ${times[1]} ${times[0]} * * *`,
       async () => {
+        logger.info('Trigger cron')
         io.to(device.id).emit('sync-trigger', { isOn: true })
-        await new Promise((resolve) => setTimeout(resolve, Number(setting.time) * 60 * 1000))
-        io.to(device.id).emit('sync-trigger', { isOn: false })
+        setTimeout(() => {
+          io.to(device.id).emit('sync-trigger', { isOn: false })
+          logger.info('Stop trigger cron')
+        }, Number(setting.time) * 60 * 1000)
       },
       null,
       false,
-      'Asia/Ho_Chi_Minh'
+      'UTC'
     )
     app.set('cron', cron)
     if (setting.timerOn) {

@@ -90,7 +90,7 @@ void setup()
   lcd.backlight();
   dht.begin();
   webSocket.on("sync-trigger", syncTrigger);
-  webSocket.begin("192.168.1.16", 8080, "/socket.io/?transport=websocket");
+  webSocket.begin("autopump.herokuapp.com", 80, "/socket.io/?transport=websocket");
 }
 
 void loop()

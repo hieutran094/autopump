@@ -65,6 +65,7 @@ import { defineComponent } from 'vue'
 import DatePicker from 'vue-datepicker-next'
 import 'vue-datepicker-next/index.css'
 import SettingService from '../services/SettingService.js'
+import moment from 'moment-timezone'
 export default defineComponent({
   name: 'setting-box',
   components: { DatePicker },
@@ -77,6 +78,7 @@ export default defineComponent({
     this.$store.dispatch('startLoading')
     try {
       const { data } = await SettingService.getSetting(this.$axios)
+      data.startTime = moment.utc(data.startTime, 'HH:mm').tz('Asia/Ho_Chi_Minh').format('HH:mm')
       this.setting = data
     } catch (e) {
       const message = typeof e === 'string' ? e : e.response.data
@@ -93,6 +95,7 @@ export default defineComponent({
           throw 'StarAt/Time is invalid.'
         }
         const formData = { ...this.setting }
+        formData.startTime = moment(formData.startTime, 'HH:mm').tz('Asia/Ho_Chi_Minh').utc().format('HH:mm')
         const res = await SettingService.updateSetting(this.$axios, formData)
         if (res.success) {
           this.$store.dispatch('handleNotifications', { message: res.message, success: true })
@@ -109,7 +112,9 @@ export default defineComponent({
     },
   },
   watch: {
-    'setting.startTime': async function () {},
+    'setting.startTime': async function () {
+      //console.log(moment(this.setting.startTime, 'HH:mm').tz('Asia/Ho_Chi_Minh').utc().format('HH:mm'))
+    },
   },
 })
 </script>
