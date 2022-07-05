@@ -1,5 +1,5 @@
 
-# Autopump
+# Autopump   [![Badge License]][License]
 
 *Dashboard = [VueJs] + [ExpressJs] + [Nginx] + [Docker]*
 
@@ -68,6 +68,10 @@ yarn dev
 
 
 <!----------------------------------------------------------------------------->
+
+[Badge License]: https://img.shields.io/badge/License-Unknown-808080.svg?style=for-the-badge
+
+[License]: #
 
 [PlatformIO]: https://platformio.org/
 [ExpressJs]: http://expressjs.com/
