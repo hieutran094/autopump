@@ -1,9 +1,6 @@
+name: Manual deploy to Development
 
-name: Auto deploy to heroku
-
-on:
-  push:
-    branches: ['master']
+on: workflow_dispatch
 
 jobs:
   release:
