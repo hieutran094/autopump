@@ -21,7 +21,7 @@ const bootstrap = async () => {
     await mongoose.connect(process.env.DB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
     logger.info('Connected to DB')
 
-    server.listen(process.env.PORT || 80, () => {
+    server.listen(process.env.EXPRESS_PORT || 80, () => {
       logger.info(`Server listening on port ${process.env.PORT}`)
     })
 

@@ -1,0 +1,42 @@
+# buid production client code
+FROM node:14.5.0-alpine as builder
+
+WORKDIR /app
+
+COPY /client .
+
+ARG VITE_NODE_ENV=production
+
+RUN yarn install
+
+RUN yarn build
+
+# Nginx config
+
+FROM nginx:alpine as production-build
+
+# install nodejs
+
+RUN apk add --update nodejs npm yarn
+RUN node --version && yarn --version
+
+COPY /nginx/nginx.conf /etc/nginx/nginx.conf
+
+RUN rm -rf /usr/share/nginx/html/*
+
+COPY --from=builder /app/dist /usr/share/nginx/html
+
+EXPOSE $PORT
+
+COPY /entrypoint.sh .
+
+COPY /server .
+
+RUN yarn install
+
+RUN chmod +x /entrypoint.sh
+
+ENV EXPRESS_PORT=$EXPRESS_PORT
+ENV DB_URL=$DB_URL
+
+ENTRYPOINT [ "/entrypoint.sh" ]
