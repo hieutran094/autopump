@@ -5,6 +5,7 @@ VueJs + ExpressJs + Nginx + Docker app
  - VueJs + Vite
  - Express server with routes and Socket.io + Dynamic Crons
  - MongoDB
+ - Docker + Nginx for deploy to heroku
  - PlatformIO + ESP8266
 
 ## Run dev
