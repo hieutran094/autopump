@@ -1,21 +1,86 @@
-VueJs + ExpressJs + Nginx + Docker app
-![autopump](https://user-images.githubusercontent.com/84322691/177281621-7e8496c1-4925-4053-9760-0f8a9d497e03.png)
-==========
+
+# Autopump   [![Badge License]][License]
+
+*Dashboard = [VueJs] + [ExpressJs] + [Nginx] + [Docker]*
+
+<br>
+<br>
+
+![Preview]
+
+<br>
 
 ## Included
- - VueJs + Vite
- - Express server with routes and Socket.io + Dynamic Crons
- - MongoDB
- - Docker + Nginx for deploy to heroku
- - PlatformIO + ESP8266
 
-## Run dev
-Copy ```.env.example``` from both client and server folder to ```.env``` file.
+-   **[ExpressJS]** server with routes <br>
+    & Socket.io + Dynamic Crons
+    
+-   **[PlatformIO]** + **[ESP8266]**
+    
+-   **[Docker]** + **[Nginx]** for <br>
+    deployment to **[Heroku]**
+
+-   **[VueJs]** + **[Vite]**
+
+-   **[MongoDB]**
+
+<br>
+<br>
+
+## Running
+
+Copy the `.env.example` files from both <br>
+the client and server folder to `.env` file.
+
+<br>
+
 ### Client
-1) ```cd client```
-2) ```yarn install```
-2) ```yarn dev```
+
+```shell
+cd client
+```
+
+```shell
+yarn install
+```
+
+```shell
+yarn dev
+```
+
+<br>
+
 ### Server
-1) ```cd server```
-2) ```yarn install```
-2) ```yarn dev```
+
+```shell
+cd server
+```
+
+```shell
+yarn install
+```
+
+```shell
+yarn dev
+```
+
+<br>
+
+
+<!----------------------------------------------------------------------------->
+
+[Badge License]: https://img.shields.io/badge/License-Unknown-808080.svg?style=for-the-badge
+
+[License]: #
+
+[PlatformIO]: https://platformio.org/
+[ExpressJs]: http://expressjs.com/
+[ESP8266]: https://en.wikipedia.org/wiki/ESP8266
+[MongoDB]: https://www.mongodb.com/
+[Heroku]: https://www.heroku.com/
+[Docker]: https://www.docker.com/
+[Nginx]: https://nginx.org/en/
+[VueJs]: https://vuejs.org/
+[Vite]: https://vitejs.dev/
+
+[Preview]: https://user-images.githubusercontent.com/84322691/177281621-7e8496c1-4925-4053-9760-0f8a9d497e03.png
