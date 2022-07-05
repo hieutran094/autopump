@@ -36,7 +36,7 @@ RUN yarn install
 
 RUN chmod +x /entrypoint.sh
 
-ENV EXPRESS_PORT=$EXPRESS_PORT
+ARG EXPRESS_PORT=3000
 ENV DB_URL=$DB_URL
 
 ENTRYPOINT [ "/entrypoint.sh" ]
