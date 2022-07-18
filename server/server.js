@@ -22,7 +22,7 @@ const bootstrap = async () => {
     logger.info('Connected to DB')
 
     server.listen(process.env.EXPRESS_PORT || 80, () => {
-      logger.info(`Server listening on port ${process.env.PORT}`)
+      logger.info(`Server listening on port ${process.env.EXPRESS_PORT}`)
     })
 
     initCron()

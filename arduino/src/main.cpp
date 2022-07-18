@@ -24,6 +24,72 @@ unsigned long time1 = 0;
 float soilMoisture;
 float airHumidity;
 float temperature;
+boolean timerOn;
+
+void readConfig(boolean &timerOn)
+{
+  USE_SERIAL.println(F("Start mounted file..."));
+  if (!SPIFFS.begin())
+  {
+    USE_SERIAL.println(F("Can't mounted file system"));
+    return;
+  }
+  if (SPIFFS.exists(F("/config.json")))
+  {
+    USE_SERIAL.println(F("Reading config file"));
+    File configFile = SPIFFS.open("/config.json", "r");
+    if (configFile)
+    {
+      USE_SERIAL.print(F("Opened config file: "));
+      size_t size = configFile.size();
+      std::unique_ptr<char[]> buf(new char[size]);
+      configFile.readBytes(buf.get(), size);
+      StaticJsonDocument<50> doc;
+      DeserializationError error = deserializeJson(doc, buf.get());
+      if (!error)
+      {
+        serializeJson(doc, USE_SERIAL);
+        USE_SERIAL.println();
+        timerOn = doc["timerOn"];
+      }
+      else
+      {
+        USE_SERIAL.println(F("Failed to load json config"));
+      }
+    }
+    return;
+  }
+}
+
+void saveConfig(const char *conf)
+{
+  USE_SERIAL.println(F("Start mounted file..."));
+  if (!SPIFFS.begin())
+  {
+    USE_SERIAL.println(F("Can't mounted file system"));
+    return;
+  }
+  StaticJsonDocument<50> doc;
+  DeserializationError error = deserializeJson(doc, conf);
+  if (!error)
+  {
+    USE_SERIAL.println(F("Saving config"));
+    File configFile = SPIFFS.open("/config.json", "w");
+    if (!configFile)
+    {
+      USE_SERIAL.println(F("Failed to open config file for writing"));
+      return;
+    }
+    serializeJson(doc, configFile);
+    configFile.close();
+    USE_SERIAL.println(F("Save config file successfuly"));
+    readConfig(timerOn);
+  }
+  else
+  {
+    USE_SERIAL.println(F("Failed to load json config"));
+  }
+}
 
 void triggerAction(const char *data)
 {
@@ -67,6 +133,11 @@ void syncTrigger(const char *payload, size_t size)
   triggerAction(payload);
 }
 
+void syncSetting(const char *payload, size_t size)
+{
+  saveConfig(payload);
+}
+
 void setup()
 {
   USE_SERIAL.begin(115200);
@@ -89,6 +160,8 @@ void setup()
   lcd.init();
   lcd.backlight();
   dht.begin();
+  readConfig(timerOn);
+  webSocket.on("sync-setting", syncSetting);
   webSocket.on("sync-trigger", syncTrigger);
   webSocket.begin("autopump.herokuapp.com", 80, "/socket.io/?transport=websocket");
 }
@@ -108,6 +181,10 @@ void loop()
     lcd.setCursor(0, 1);
     lcd.print(temperature);
     lcd.print("*C");
+    if (!timerOn)
+    {
+      Serial.println(F("Timer is off. Start auto trigger from local"));
+    }
     syncData(temperature, airHumidity, soilMoisture, pumpState);
     time1 = millis();
   }

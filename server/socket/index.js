@@ -1,6 +1,7 @@
 import Server from 'socket.io'
 import { logger } from '../utils/logger.js'
 import emitter from '../utils/event.js'
+import {settingService} from '../services/index.js'
 
 export default (expressServer) => {
   const device = { id: null, isOnline: false }
@@ -16,12 +17,17 @@ export default (expressServer) => {
     }
   })
 
-  io.on('connection', (socket) => {
+  io.on('connection', async (socket) => {
     try {
       if (socket.handshake.headers['user-agent'].includes('arduino') && device.isOnline) {
-        if (!socket.handshake.headers['user-agent'].includes('arduino') && device.isOnline) {
-          io.emit('esp-online')
+        const setting = await settingService.getOne()
+        const socketData = {
+          timerOn: setting.timerOn,
         }
+        io.to(device.id).emit('sync-setting', socketData)
+      }
+      if (!socket.handshake.headers['user-agent'].includes('arduino') && device.isOnline) {
+        io.emit('esp-online')
       }
     } catch (e) {
       logger.error(e)
@@ -38,6 +44,12 @@ export default (expressServer) => {
   })
   emitter.on('event-socket-action', (data) => {
     io.to(device.id).emit('sync-trigger', data)
+  })
+  emitter.on('event-update-setting', (data) => {
+    const socketData = {
+      timerOn: data.timerOn,
+    }
+    io.to(device.id).emit('sync-setting', socketData)
   })
   return io
 }
